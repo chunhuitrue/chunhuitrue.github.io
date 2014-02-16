@@ -1,4 +1,4 @@
 chunhuitrue.github.io
 =====================
 
-blog
+it is blog source, see [here](http://chunhuitrue.github.io/).
