@@ -1,8 +1,10 @@
 ---
 layout: post
 title: "网络流量处理中的协议解析:解析"
-date: 2024-03-02 17:00:00
+date: 2024-03-03 17:00:00 +0800
 categories: 技术
+tags: 技术 协议解析
+published: true
 ---
 
 能从链接中拿到一行一行的数据，就可以开始解析SMTP了。
@@ -17,11 +19,13 @@ while (get_line() != 0) {
     if (state == HEAD) {	
         // 处理head的过程
         state = BODY;
+        continue;
     }
 	
     if (state == BODY) {	
         // 处理body的过程
         state = END;
+        continue;		
     }
 	 
     // 其他部分处理
