@@ -1,0 +1,123 @@
+---
+layout: post
+title: "emacs 代码导航"
+date: 2024-07-26 20:00:00 +0800
+categories: 技术
+tags: 技术 emacs
+published: true
+---
+
+整理记录一下emacs编辑代码，浏览代码用到的工具和方法。日常开发的项目基本上用了。其中有些快捷键是默认的，有些是自定义的，如果不习惯，可以根据自己需要重新定义。
+
+我把我的emacs的安装目录上传到了：[gitee](https://gitee.com/chunhui_true/dot.emacs.d) 和[github](https://github.com/chunhuitrue/dot.emacs.d)。可以直接作为.emacs.d。emacs 28 29 都可以。
+
+
+#### 网上代码搜索
+
+这里可以直接搜索代码，但我没怎么用过。
+[grep.app](https://grep.app/) 和 [sourcegraph](https://sourcegraph.com/search)
+
+#### 项目的文件查找
+
+* 可以用emacs之外的命令行工具
+
+  fd、find、locate、which
+
+* emacs中可以用helm-projectile
+
+最常用的就是helm-projectile-find-file C-c p f 查找文件。
+比如模糊定位文件"plugin/reassemble/app_smtp.c":
+> C-c p f 之后直接输入smtp.c，这时候再按一个空格就定位到了。
+
+要递进定位。那么按:
+> plug 空格 reas 空格  smtp
+
+这样在一堆文件中，你不需要在列表中逐个查找，可以通过模糊搜索快速定位文件，打开文件。其余的命令还有：
+> helm-projectile-find-file-dwim
+
+> helm-projectile-find-dir
+
+> helm-projectile-recentf
+
+这些命令都可以通过C-c p 弹出菜单找到,菜单中也有各自的快捷键。
+
+#### 代码导航
+
+##### global
+
+global可以生成gtags，让emacs根据索引文件查找代码。配合helm-gtags使用更方便。需要首先在代码目录下执行gtags生成索引文件。然后才能查找。比如：
+
+* 跳转到定义：
+> helm-gtags-dwim  M-.
+
+* 查找函数或变量的被引用位置：
+> helm-gtags-find-rtag M-r
+
+* 跳转之后返回：
+> helm-gtags-pop-stack M-,
+
+* 项目范围内查找
+> helm-gtags-select C-c h
+
+##### lsp
+
+global对c语言支持足够了，而且安装简单依赖少。但现在lsp更好一些。而且支持更多语言。有些新的语言global的索引方式跳转起来已经不那么好使了。
+
+* 跳转到光标所在处定义
+> xref-find-definitions M-.
+
+* 查找光标所在处的引用
+> lsp-find-references M-r
+
+* 跳转之后返回
+> xref-go-back M-,
+
+* buffer内查找函数和变量
+> helm-imenu C-c i
+>
+> lsp-ui-imenu M-j  没有模糊查询
+>
+> lsp-treemacs-symbols C-c C-c S  没模糊查询
+
+* 整个项目内查找函数和变量
+>  helm-lsp-workspace-symbol  C-c x i
+
+* 整个项目内查找引用
+> lsp-find-references M-r
+>
+> lsp-treemacs-references
+>
+> lsp-ui-peek-find-references C-c C-p r
+
+* 函数调用级别
+> lsp-treemacs-call-hierarchy C-c C-c h
+
+* buffer内跳转返回
+
+在用imenu 跳转到一个位置后，C-u C-SPC 会返回跳转之前的位置。仅限于本buffer中用imenu的方式
+临时标记一个位置C-SPC，移动到其他位置之后也可以用C-u C-SPC跳回来。如果标记多个，可以倒叙返回。也仅限于本buffer
+
+#### 查找关键字
+
+* buffer中查找关键字
+> isearch C-s
+>
+> 此外M-s 菜单中还有isearch系列搜索
+
+* 更快速地在当前buffer查找关键字：
+> helm-occur   C-c o 或 C-x c M-s o  实时交互
+>
+> occur  M-s o  列出关键字的完整列表，同时可以预览。但在执行命令时，不会自动填充关键字
+
+* 高亮buffer中的关键字
+> isearch C-s
+>
+> isearch-forward-symbol-at-point M-s .   光标所在当前的thing（不管是否在开头）比C-s稍快，而且是基于语法的变量
+>
+> isearch-forward-thing-at-point  M-s M-. 光标所在当前的thing（不管是否在开头）比C-s稍快 比上面多一个M快捷键
+>
+> symbol-overlay  M-i  高亮函数范围内的符号。锁定。可以取消。可以高亮多个。
+
+
+* 文件中查找关键字
+> rg 也就是ripgrep。功能丰富速度快
