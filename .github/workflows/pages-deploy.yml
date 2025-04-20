@@ -27,10 +27,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 清理旧的构建缓存
-        run: |
-        rm -rf ./artifact_cache
-        
       - name: Checkout
         uses: actions/checkout@v4
         with:
